@@ -16,26 +16,26 @@ const mongoUrl = process.env.MONGO_URL;
 
 server.get('/favicon.ico', (req, res) => res.status(204));
 
-server.get("/", (req, res) => {
+server.get("/blogs", (req, res) => {
   const blogs = Blog.find({}).then((blogs) => {
     res.send(blogs);
   });
 });
 
-server.get("/:id", (req, res) => {
+server.get("/blogs/:id", (req, res) => {
   const blog = Blog.findById(req.params.id)
     .then((blog) => res.send(blog))
     .catch((err) => console.log(err));
 });
 
-server.delete("/:id", (req, res) => {
+server.delete("/blogs/:id", (req, res) => {
   const blog = Blog.findByIdAndDelete(
     req.params.id
   )
     .then(res.send("done"))
     .catch((err) => console.log(err));
 });
-server.post("/submit", (req, res) => {
+server.post("/blogs/submit", (req, res) => {
   console.log(req.body);
   const blog = Blog.create({
     title: req.body.title,
@@ -48,7 +48,7 @@ server.post("/submit", (req, res) => {
     });
 });
 
-server.put("/:id", (req, res) => {
+server.put("/blogs/:id", (req, res) => {
   const blog = Blog.findByIdAndUpdate(
     req.params.id,
     req.body
@@ -63,6 +63,10 @@ server.put("/:id", (req, res) => {
     })
     .catch((err) => console.log(err));
 });
+
+server.use('/user',require('./routes/userRoutes'))
+
+
 mongoose.connect(mongoUrl).then(() => {
   try {
     server.listen(port);
